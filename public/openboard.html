@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Open Board</title>
+    <link rel="icon" type="image/svg+xml" href="icons/1_pencil.svg" />
+    <style>
+      @import url(https://fonts.googleapis.com/css?family=Dosis:700);
+
+      /* * {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Dosis', Helvetica, Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+} */
+
+      /******** hambuger-cross *********/
+      /* nav {
+  height: 8rem;
+} */
+
+      .tools-toggle-button {
+        z-index: 1001;
+        background-color: #d1d8e0;
+        width: 5.2rem;
+        height: 5.2rem;
+        display: flex;
+        justify-content: center;
+        position: fixed;
+        top: 1.5rem;
+        left: 2.3rem;
+        border-radius: 50%;
+        box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
+          rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+      }
+
+      #nav-icon1 {
+        width: 3rem;
+        height: 0.9rem;
+        position: relative;
+        top: 1.2rem;
+        -webkit-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+        -webkit-transition: 0.5s ease-in-out;
+        -moz-transition: 0.5s ease-in-out;
+        -o-transition: 0.5s ease-in-out;
+        transition: 0.5s ease-in-out;
+        cursor: pointer;
+      }
+
+      #nav-icon1 span {
+        display: block;
+        position: absolute;
+        height: 9px;
+        width: 100%;
+        background: #555555;
+        border-radius: 9px;
+        opacity: 1;
+        left: 0;
+        -webkit-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+        -webkit-transition: 0.25s ease-in-out;
+        -moz-transition: 0.25s ease-in-out;
+        -o-transition: 0.25s ease-in-out;
+        transition: 0.25s ease-in-out;
+      }
+
+      #nav-icon1 span:nth-child(1) {
+        top: 0px;
+      }
+
+      #nav-icon1 span:nth-child(2) {
+        top: 18px;
+      }
+
+      #nav-icon1 span:nth-child(3) {
+        top: 36px;
+      }
+
+      #nav-icon1.open span:nth-child(1) {
+        top: 18px;
+        -webkit-transform: rotate(135deg);
+        -moz-transform: rotate(135deg);
+        -o-transform: rotate(135deg);
+        transform: rotate(135deg);
+      }
+
+      #nav-icon1.open span:nth-child(2) {
+        opacity: 0;
+        left: -60px;
+      }
+
+      #nav-icon1.open span:nth-child(3) {
+        top: 18px;
+        -webkit-transform: rotate(-135deg);
+        -moz-transform: rotate(-135deg);
+        -o-transform: rotate(-135deg);
+        transform: rotate(-135deg);
+      }
+
+      /*********** tools ************/
+      .tools {
+        z-index: 1001;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        width: 50rem;
+        height: 5.2rem;
+        background-color: #d1d8e0;
+        position: fixed;
+        top: 1.5rem;
+        left: 21rem;
+        margin: auto;
+        border-radius: 1.5rem;
+        box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
+          rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+        animation-name: show-tools;
+        animation-duration: 1s;
+      }
+
+      .tools img {
+        height: 3.3rem;
+        cursor: pointer;
+        transition: all 0.6s;
+      }
+
+      .active {
+        transform: rotate(-10deg) scale(1.3);
+        box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
+          rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+      }
+
+      .disabled {
+        opacity: 0.2;
+      }
+
+      /********* animations *********/
+      @keyframes show-tools {
+        0% {
+          transform: scale(0.2);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+      @keyframes hide-tools {
+        0% {
+          transform: scale(1);
+        }
+        100% {
+          transform: scale(0);
+        }
+      }
+      @keyframes fadeOut {
+        0% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+        }
+      }
+
+      /**********input range**********/
+      .value {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0.6;
+        z-index: 1001;
+
+        text-align: center;
+        font-size: 10rem;
+        color: #000000;
+        width: 10rem;
+        height: 10rem;
+        letter-spacing: -0.07em;
+        text-shadow: 8px 10px 8px rgba(50, 50, 93, 0.25);
+        display: none;
+      }
+      input[type='range'] {
+        z-index: 1001;
+        position: fixed;
+        top: 50%;
+        left: -7rem;
+
+        transform: rotate(-90deg);
+        display: block;
+        -webkit-appearance: none;
+        background-color: #000000;
+        width: 300px;
+        height: 5px;
+        border-radius: 5px;
+        outline: 0;
+      }
+      input[type='range']::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        background-color: #4b6584;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border: 2px solid white;
+        cursor: pointer;
+        transition: 0.3s ease-in-out;
+      }
+      ​input[type='range']::-webkit-slider-thumb:hover {
+        background-color: white;
+        border: 2px solid #4b6584;
+      }
+      input[type='range']::-webkit-slider-thumb:active {
+        transform: scale(1.6);
+      }
+
+      /***********sticky notes************/
+      .sticky-note {
+        width: 15rem;
+        height: 16rem;
+        position: absolute;
+        top: 15rem;
+        left: 10rem;
+      }
+
+      .sticky-note header {
+        height: 2rem;
+        width: 100%;
+        background-color: #d1d8e0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top-left-radius: 0.8rem;
+        border-top-right-radius: 0.8rem;
+      }
+
+      .sticky-note header input {
+        border: none;
+        outline: none;
+        margin-left: 0.8rem;
+        font-size: 1.2rem;
+        width: 10rem;
+        background: transparent;
+      }
+
+      .sticky-note header .actions {
+        display: flex;
+      }
+
+      .minimize {
+        background-color: #26de81;
+      }
+
+      .remove {
+        background-color: #eb3b5a;
+      }
+
+      .sticky-note header .actions div {
+        height: 1rem;
+        width: 1rem;
+        border-radius: 50%;
+        margin-right: 0.6rem;
+        cursor: pointer;
+      }
+
+      .sticky-note .note-container {
+        height: calc(100% - 2rem);
+        box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
+          rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+        border-bottom-left-radius: 0.8rem;
+        border-bottom-right-radius: 0.8rem;
+        padding: 0.2rem;
+        display: block;
+      }
+
+      .sticky-note .note-container textarea,
+      .sticky-note .note-container img {
+        height: 100%;
+        width: 100%;
+      }
+
+      .sticky-note .note-container textarea {
+        outline: none;
+        border: none;
+        resize: none;
+        text-align: center;
+        line-height: 1.4rem;
+        font-size: 1.2rem;
+        color: #555555;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <div class="tools-toggle-button">
+        <div id="nav-icon1" class="open">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+
+      <div class="tools">
+        <img id="pencil" class="active" src="icons/0_pencil.svg" />
+        <img id="eraser" src="icons/eraser.svg" />
+        <img id="sticky" src="icons/note.svg" />
+        <img id="upload" src="icons/photo.svg" />
+        <img id="undo" src="icons/undo.svg" class="disabled" />
+        <img id="redo" src="icons/redo.svg" class="disabled" />
+        <img id="download" src="icons/download.svg" />
+        <!-- <img id="zoom-in" src="icons/zoom-in.svg" />
+        <img id="zoom-out" src="icons/zoom-out.svg" /> -->
+      </div>
+    </nav>
+
+    <div id="pencil-slider-value">
+      <div class="value">2</div>
+      <input type="range" min="1" max="10" step="1" value="3" />
+    </div>
+
+    <div id="eraser-slider-value">
+      <div class="value">2</div>
+      <input
+        type="range"
+        min="1"
+        max="10"
+        step="1"
+        value="3"
+        style="display: none"
+      />
+    </div>
+
+    <!-- <div class="sticky-note">
+      <header>
+        <input type="text" />
+        <div class="actions">
+          <div class="minimize"></div>
+          <div class="remove"></div>
+        </div>
+      </header>
+      <div class="note-container">
+        <textarea></textarea>
+      </div>
+    </div> -->
+
+    <div class="canvas_div_pdf">
+      <canvas></canvas>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.3/jspdf.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+    <script type="text/javascript">
+      //////////////////////////////////////////////////////
+      // tools and humburger
+
+      let hamburger = document.querySelector('#nav-icon1');
+      let toolsDisplay = true;
+      hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('open');
+
+        let tools = document.querySelector('.tools');
+        if (toolsDisplay) {
+          tools.setAttribute(
+            'style',
+            'animation-name:hide-tools;animation-duration: 0.8s'
+          );
+          setTimeout(function () {
+            tools.style.display = 'none';
+          }, 700);
+          toolsDisplay = false;
+        } else {
+          tools.setAttribute('style', 'animation-name:show-tools');
+          tools.style.display = 'flex';
+          toolsDisplay = true;
+        }
+      });
+
+      //////////////////////////////////////////////////////
+      // sliders -> eraser n pencil and pencil colors
+      let colors = ['#000000', '#eb3b5a', '#3867d6']; //black,red,blue
+      let colorNumber = 0;
+      let currColor = '#000000';
+
+      var pencilSlider = document.querySelector('#pencil-slider-value input');
+      let eraserSlider = document.querySelector('#eraser-slider-value input');
+      let pencil = document.querySelector('img#pencil');
+      let eraser = document.querySelector('img#eraser');
+      var pencilTarget = document.querySelector('#pencil-slider-value .value');
+      var eraserTarget = document.querySelector('#eraser-slider-value .value');
+
+      //to toggle active class
+      pencil.addEventListener('click', () => {
+        pencil.classList.add('active');
+        eraser.classList.remove('active');
+        pencilSlider.style.display = 'block';
+        eraserSlider.style.display = 'none';
+
+        tool.strokeStyle = currColor;
+      });
+      eraser.addEventListener('click', () => {
+        eraser.classList.add('active');
+        pencil.classList.remove('active');
+        pencilSlider.style.display = 'none';
+        eraserSlider.style.display = 'block';
+
+        tool.strokeStyle = 'white';
+      });
+
+      // to get the slider and value functionality
+      changeSliderValue(pencilSlider, pencilTarget);
+      changeSliderValue(eraserSlider, eraserTarget);
+      function changeSliderValue(slider, target) {
+        slider.addEventListener('input', () => {
+          var newValue = slider.value;
+          tool.lineWidth = newValue;
+          target.style.display = 'block';
+          target.innerHTML = newValue;
+        });
+        slider.addEventListener('mouseup', () => {
+          target.style.display = 'none';
+        });
+      }
+
+      // for changing pencil colors on double click of slider or pencil icon
+      pencilSlider.addEventListener('dblclick', changePencilColor);
+      pencil.addEventListener('dblclick', changePencilColor);
+      function changePencilColor() {
+        pencil.setAttribute('src', `icons/${colorNumber}_pencil.svg`);
+        pencilSlider.setAttribute(
+          'style',
+          `background-color: ${colors[colorNumber]}; border: 2px solid ${colors[colorNumber]}`
+        );
+        pencilTarget.style.color = colors[colorNumber];
+        tool.strokeStyle = colors[colorNumber];
+        currColor = colors[colorNumber];
+        colorNumber = (colorNumber + 1) % 3;
+      }
+
+      //////////////////////////////////////////////////////
+      // sticky notes
+      let sticky = document.querySelector('img#sticky');
+      let stickyNoteNumber = 0;
+      sticky.addEventListener('click', () => {
+        let stickyTemplateHTML = `
+  <header>
+    <input type="text" />
+    <div class="actions">
+      <div class="minimize"></div>
+      <div class="remove"></div>
+    </div>
+  </header>
+  <div class="note-container">
+    <textarea spellcheck="false" ></textarea>
+  </div>
+  `;
+
+        createStickyNote(stickyTemplateHTML);
+      });
+
+      //sticky on upload image
+      let upload = document.querySelector('img#upload');
+      upload.addEventListener('click', () => {
+        let input = document.createElement('input');
+        input.setAttribute('type', 'file');
+        input.setAttribute('accept', 'image/*');
+        input.click();
+
+        input.addEventListener('change', () => {
+          let file = input.files[0];
+          let url = URL.createObjectURL(file);
+          let stickyTemplateHTML = `
+    <header>
+    <input type="text" value=${file.name.split('.')[0]} />
+    <div class="actions">
+      <div class="minimize"></div>
+      <div class="remove"></div>
+    </div>
+    </header>
+    <div class="note-container">
+      <img src = "${url}" />
+    </div>
+    `;
+          createStickyNote(stickyTemplateHTML);
+        });
+      });
+
+      function createStickyNote(stickyTemplateHTML) {
+        let stickyCont = document.createElement('div');
+        stickyCont.setAttribute('class', 'sticky-note');
+        stickyCont.setAttribute('id', `sticky-note-${stickyNoteNumber}`);
+
+        let navDimensions = document
+          .querySelector('nav')
+          .getBoundingClientRect();
+        let left = Math.floor(Math.random() * window.innerWidth);
+        let top = Math.floor(
+          Math.random() * (window.innerHeight - navDimensions.height)
+        );
+
+        stickyCont.innerHTML = stickyTemplateHTML;
+
+        if (top < navDimensions.height) {
+          top += navDimensions.height;
+        }
+        if (top > window.innerHeight / 2) {
+          top -= 256;
+        }
+        stickyCont.style.top = top + window.pageYOffset + 'px';
+
+        if (left > 240) {
+          left -= 240;
+        }
+        stickyCont.style.left = left + 'px';
+        document.querySelector('.canvas_div_pdf').appendChild(stickyCont);
+
+        //for drap n drop
+        document.querySelector(
+          `#sticky-note-${stickyNoteNumber} header`
+        ).onmousedown = function (event) {
+          dragAndDrop(stickyCont, event);
+        };
+        stickyCont.ondragstart = function () {
+          return false;
+        };
+
+        //to minimize note textarea
+        let minimize = document.querySelector(
+          `#sticky-note-${stickyNoteNumber} .minimize`
+        );
+        let noteContainer = document.querySelector(
+          `#sticky-note-${stickyNoteNumber} .note-container`
+        );
+        let noteHeader = document.querySelector(
+          `#sticky-note-${stickyNoteNumber} header`
+        );
+        minimize.addEventListener('click', () => {
+          let display =
+            getComputedStyle(noteContainer).getPropertyValue('display');
+          if (display === 'block') {
+            noteContainer.style.display = 'none';
+            noteHeader.style.borderRadius = '0.8rem';
+          } else {
+            noteHeader.style.borderBottomLeftRadius = '';
+            noteHeader.style.borderBottomRightRadius = '';
+            noteContainer.style.display = 'block';
+          }
+        });
+
+        //to delete the sticky note
+        let remove = document.querySelector(
+          `#sticky-note-${stickyNoteNumber} .remove`
+        );
+        remove.addEventListener('click', () => {
+          console.log('clicked');
+          stickyCont.remove();
+        });
+
+        stickyNoteNumber++;
+      }
+
+      function dragAndDrop(element, event) {
+        let shiftX = event.clientX - element.getBoundingClientRect().left;
+        let shiftY = event.clientY - element.getBoundingClientRect().top;
+        // (1) prepare to moving: make absolute and on top by z-index
+        // element.style.position = 'absolute';
+        element.style.zIndex = 1000;
+
+        // centers the element at (pageX, pageY) coordinates
+        function moveAt(pageX, pageY) {
+          element.style.left = pageX - shiftX + 'px';
+          element.style.top = pageY - shiftY + 'px';
+        }
+
+        // move our absolutely positioned element under the pointer
+        moveAt(event.pageX, event.pageY);
+
+        function onMouseMove(event) {
+          moveAt(event.pageX, event.pageY);
+        }
+
+        // (2) move the element on mousemove
+        document.addEventListener('mousemove', onMouseMove);
+
+        // (3) drop the element, remove unneeded handlers
+        element.onmouseup = function () {
+          document.removeEventListener('mousemove', onMouseMove);
+          element.onmouseup = null;
+        };
+      }
+
+      /**************************************CANVAS*****************************************/
+
+      let canvas = document.querySelector('canvas');
+      let undoRedoTracker = [];
+      let track = 0;
+      addToundoRedoTracker();
+      let undo = document.querySelector('img#undo');
+      let redo = document.querySelector('img#redo');
+
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight * 4;
+
+      let tool = canvas.getContext('2d');
+
+      tool.strokeStyle = 'black';
+      tool.lineWidth = '3';
+      let mouseDown = false;
+
+      canvas.addEventListener('mousedown', (e) => {
+        mouseDown = true;
+        beginPath({ x: e.pageX, y: e.pageY });
+      });
+
+      canvas.addEventListener('mousemove', (e) => {
+        if (mouseDown) drawStroke({ x: e.pageX, y: e.pageY });
+      });
+
+      canvas.addEventListener('mouseup', () => {
+        mouseDown = false;
+
+        addToundoRedoTracker();
+      });
+
+      function addToundoRedoTracker() {
+        let url = canvas.toDataURL();
+        undoRedoTracker.push(url);
+        track = undoRedoTracker.length - 1;
+
+        if (track > 0) {
+          undo.classList.remove('disabled');
+        }
+      }
+
+      undo.addEventListener('click', () => {
+        if (track > 0) {
+          track--;
+          undoRedoCanvas();
+        }
+
+        updateUndoRedoDisabledClass();
+      });
+
+      redo.addEventListener('click', () => {
+        if (track < undoRedoTracker.length - 1) {
+          track++;
+          undoRedoCanvas();
+        }
+
+        updateUndoRedoDisabledClass();
+      });
+
+      function updateUndoRedoDisabledClass() {
+        if (track <= 0) {
+          undo.classList.add('disabled');
+        } else {
+          undo.classList.remove('disabled');
+        }
+
+        if (track < undoRedoTracker.length - 1) {
+          redo.classList.remove('disabled');
+        } else {
+          redo.classList.add('disabled');
+        }
+      }
+
+      function undoRedoCanvas() {
+        let url = undoRedoTracker[track];
+        let img = new Image();
+        img.src = url;
+
+        img.onload = () => {
+          tool.fillStyle = 'white';
+          tool.fillRect(0, 0, canvas.width, canvas.height);
+          tool.drawImage(img, 0, 0, canvas.width, canvas.height);
+        };
+      }
+
+      function beginPath(strokeObj) {
+        tool.beginPath();
+        tool.moveTo(strokeObj.x, strokeObj.y);
+      }
+
+      function drawStroke(strokeObj) {
+        tool.lineTo(strokeObj.x, strokeObj.y);
+        tool.stroke();
+      }
+
+      let download = document.querySelector('img#download');
+      download.addEventListener('click', () => {
+        // let url = canvas.toDataURL();
+
+        // let a = document.createElement('a');
+        // a.href = url;
+        // a.download = 'board.jpg';
+        // a.click();
+        let noteContainers = document.querySelectorAll('.note-container');
+        noteContainers.forEach((note) => {
+          note.style.border = '1px solid #bbbbbb';
+        });
+
+        getPDF();
+
+        noteContainers.forEach((note) => {
+          note.style.border = 'none';
+        });
+      });
+
+      function getPDF() {
+        var HTML_Width = $('.canvas_div_pdf').width();
+        var HTML_Height = $('.canvas_div_pdf').height();
+        var top_left_margin = 15;
+        var PDF_Width = HTML_Width + top_left_margin * 2;
+        var PDF_Height = PDF_Width * 1.5 + top_left_margin * 2;
+        var canvas_image_width = HTML_Width;
+        var canvas_image_height = HTML_Height;
+
+        var totalPDFPages = Math.ceil(HTML_Height / PDF_Height) - 1;
+
+        html2canvas($('.canvas_div_pdf')[0], { allowTaint: true }).then(
+          function (canvas) {
+            canvas.getContext('2d');
+
+            console.log(canvas.height + '  ' + canvas.width);
+
+            var imgData = canvas.toDataURL('image/jpeg', 1.0);
+            var pdf = new jsPDF('p', 'pt', [PDF_Width, PDF_Height]);
+            pdf.addImage(
+              imgData,
+              'JPG',
+              top_left_margin,
+              top_left_margin,
+              canvas_image_width,
+              canvas_image_height
+            );
+
+            for (var i = 1; i <= totalPDFPages; i++) {
+              pdf.addPage(PDF_Width, PDF_Height);
+              pdf.addImage(
+                imgData,
+                'JPG',
+                top_left_margin,
+                -(PDF_Height * i) + top_left_margin * 4,
+                canvas_image_width,
+                canvas_image_height
+              );
+            }
+
+            pdf.save('myNotes.pdf');
+          }
+        );
+      }
+    </script>
+    <!-- <script src="canvas.js"></script> -->
+  </body>
+</html>
