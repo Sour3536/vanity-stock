@@ -95,7 +95,7 @@ function Books({ history, i18n, language }) {
 				<Row gutter={[24, 16]} style={{ paddingLeft: '3rem', paddingRight: '3rem', marginTop: '3em' }}>
 					{bookData.map((dat, ind) => (
 						<Col span={4} key={ind}>
-							<a href={dat.volumeInfo.previewLink} target="_blank">
+							<a href={dat.volumeInfo.previewLink} target="_blank" rel="noreferrer">
 								<BooksCard data={dat} height="400px" />
 							</a>
 						</Col>

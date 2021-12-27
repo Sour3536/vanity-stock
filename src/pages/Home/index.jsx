@@ -2,7 +2,7 @@
 /* eslint-disable no-debugger */
 import React, { useContext, useEffect, useState } from 'react';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
-import { withRouter } from 'react-router-dom';
+import { withRouter, useHistory } from 'react-router-dom';
 import { Layout } from 'components';
 import '@ant-design/compatible/assets/index.css';
 import { Row, Col } from 'antd';
@@ -44,12 +44,20 @@ gsap
 		});
 	}, '-=0.5');
 
-function Home({ history, i18n, language }) {
+function Home({ i18n, language }) {
+	const history = useHistory();
 	return (
 		<Layout breadcrumb={false} language={language}>
 			<Div>
 				<BoxDiv>
-					<InnerBox i="1" className="img">
+					<InnerBox
+						i="1"
+						className="img"
+						onClick={() => {
+							history.push({
+								pathname: `/courses`
+							});
+						}}>
 						<Span>
 							<Image src={coursesImage} />
 							<OverlayDiv></OverlayDiv>
@@ -57,7 +65,14 @@ function Home({ history, i18n, language }) {
 						<SpanText>Search For</SpanText>
 						<SpanText2>Courses</SpanText2>
 					</InnerBox>
-					<InnerBox i="2" className="img">
+					<InnerBox
+						i="2"
+						className="img"
+						onClick={() => {
+							history.push({
+								pathname: `/books`
+							});
+						}}>
 						<Span>
 							<Image src={booksImage} />
 							<OverlayDiv></OverlayDiv>
@@ -65,7 +80,14 @@ function Home({ history, i18n, language }) {
 						<SpanText>Search For</SpanText>
 						<SpanText2>Books</SpanText2>
 					</InnerBox>
-					<InnerBox i="3" className="img">
+					<InnerBox
+						i="3"
+						className="img"
+						onClick={() => {
+							history.push({
+								pathname: `/jobs`
+							});
+						}}>
 						<Span>
 							<Image src={jobsImage} />
 							<OverlayDiv></OverlayDiv>
@@ -73,7 +95,14 @@ function Home({ history, i18n, language }) {
 						<SpanText>Search For</SpanText>
 						<SpanText2>Jobs</SpanText2>
 					</InnerBox>
-					<InnerBox i="4" className="img">
+					<InnerBox
+						i="4"
+						className="img"
+						onClick={() => {
+							history.push({
+								pathname: `/questions`
+							});
+						}}>
 						<Span>
 							<Image src={questionImage} />
 							<OverlayDiv></OverlayDiv>
@@ -81,7 +110,14 @@ function Home({ history, i18n, language }) {
 						<SpanText style={{ padding: '6px 10px' }}>Search For</SpanText>
 						<SpanText2>Questions</SpanText2>
 					</InnerBox>
-					<InnerBox i="5" className="img">
+					<InnerBox
+						i="5"
+						className="img"
+						onClick={() => {
+							history.push({
+								pathname: `/certificates`
+							});
+						}}>
 						<Span>
 							<Image src={certiImage} />
 							<OverlayDiv></OverlayDiv>
@@ -89,7 +125,14 @@ function Home({ history, i18n, language }) {
 						<SpanText>Wanna Generate</SpanText>
 						<SpanText2>Certificates</SpanText2>
 					</InnerBox>
-					<InnerBox i="6" className="img">
+					<InnerBox
+						i="6"
+						className="img"
+						onClick={() => {
+							history.push({
+								pathname: `/openboard`
+							});
+						}}>
 						<Span>
 							<Image src={openBoardImage} />
 							<OverlayDiv></OverlayDiv>

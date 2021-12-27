@@ -1,18 +1,14 @@
 import React, { useEffect, useState } from 'react';
-// import { Form } from '@ant-design/compatible';
 import '@ant-design/compatible/assets/index.css';
-import { Row, Col, Form, Input, message, BackTop, Upload } from 'antd';
+import { Row, Col, Form, Input, message, BackTop, Upload, Typography } from 'antd';
 import { InboxOutlined, UploadOutlined } from '@ant-design/icons';
-// import excelToJson as xltj from 'convert-excel-to-json';
-// import { withRouter, Link, useHistory, useLocation } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import { Section, Heading, Button, Card, Layout } from 'components';
 import { media, mobile, tablet, screenLG } from 'helpers';
 import certiImage from 'assets/images/for-certi.svg';
 import certiSampleImage from 'assets/images/for-certi-sample.PNG';
-import fs from 'browserfs';
-
-const excelToJson = require('convert-excel-to-json');
+import axios from 'axios';
 
 const BackgroundImage = styled.div`
 	background-image: ${`url(${certiImage})`};
@@ -81,41 +77,40 @@ const StyledRow = styled(Row)`
 	}
 `;
 
-const props2 = {
-	beforeUpload: (file) => {
-		if (file.type !== 'image/png') {
-			message.error(`${file.name} is not a png file`);
-		}
-		return file.type === 'image/png' ? true : Upload.LIST_IGNORE;
-	},
-	onChange: (info) => {
-		console.log(info.fileList);
-	}
-};
-
 function Certificates({ i18n, country }) {
-	const [file, setFile] = useState();
-	useEffect(() => {
-		if (file) {
-			// fs.writeFileSync('a.xlsx', file);
-			// const resultObj = excelToJson({
-			// 	//TODO
-			// 	sourceFile: file,
-			// 	columnToKey: {
-			// 		A: 'name',
-			// 		B: 'email'
-			// 	}
-			// });
-			console.log(file);
+	const [xlfile, setXlFile] = useState();
+	const [sign1File, setSign1File] = useState();
+	const [sign2File, setSign2File] = useState();
+	const key = 'updatable';
+	const onFinish = (values) => {
+		if (!xlfile || !sign1File || !sign2File) {
+			message.warning('Some file uploads still left!');
+		} else {
+			message.loading({ content: 'Generating Certies...', key });
+			const formData = new FormData();
+			formData.append('excelFile', xlfile);
+			formData.append('sign1', sign1File);
+			formData.append('sign2', sign2File);
+			formData.append('desig1', values.desig1);
+			formData.append('desig2', values.desig2);
+			formData.append('org1Name', values.org1Name);
+			formData.append('org2Name', values.org2Name);
+			formData.append('appText', values.appText);
+			axios.post('https://generate-mail-certis.herokuapp.com/certi-data', formData).then((res) => {
+				message.success({ content: 'Certies Sent Successfully..', key, duration: 2 });
+			});
 		}
-	}, [file]);
-	const onFinish = async (values) => {};
+	};
 	const props = {
 		name: 'file',
-		multiple: true,
+		multiple: false,
 		action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
 		beforeUpload: (file: any) => {
-			setFile(file);
+			if (file.name.indexOf('.xlsx') === -1) {
+				message.error(`${file.name} is not a png file`);
+			} else {
+				setXlFile(file);
+			}
 			return false;
 		},
 		onChange(info) {
@@ -131,6 +126,34 @@ function Certificates({ i18n, country }) {
 		},
 		onDrop(e) {
 			console.log('Dropped files', e.dataTransfer.files);
+		}
+	};
+	const props2 = {
+		multiple: false,
+		beforeUpload: (file: any) => {
+			if (file.type !== 'image/png') {
+				message.error(`${file.name} is not a png file`);
+			} else {
+				setSign1File(file);
+			}
+			return false;
+		},
+		onChange: (info) => {
+			console.log(info.fileList);
+		}
+	};
+	const props3 = {
+		multiple: false,
+		beforeUpload: (file: any) => {
+			if (file.type !== 'image/png') {
+				message.error(`${file.name} is not a png file`);
+			} else {
+				setSign2File(file);
+			}
+			return false;
+		},
+		onChange: (info) => {
+			console.log(info.fileList);
 		}
 	};
 	return (
@@ -177,7 +200,7 @@ function Certificates({ i18n, country }) {
 									</StyledSection>
 									<StyledSection marginBottom={0}>
 										<Form layout="vertical" onFinish={onFinish}>
-											<Form.Item name="appreciation_text" label="Appreciation text">
+											<Form.Item name="appText" label="Appreciation text">
 												<Input.TextArea rows={4} placeholder="Enter Appreciation text" />
 											</Form.Item>
 											<Heading
@@ -188,51 +211,49 @@ function Certificates({ i18n, country }) {
 											/>
 											<Row gutter={16}>
 												<Col md={12} xs={24}>
-													<Form.Item name="first_name" label="First Person's Name">
+													<Form.Item name="org1Name" label="First Person's Name">
 														<Input name="first_name" placeholder="Enter Name..." required />
 													</Form.Item>
 												</Col>
 												<Col md={12} xs={24}>
-													<Form.Item name="second_name" label="Second Persons's Name">
+													<Form.Item name="org2Name" label="Second Persons's Name">
 														<Input name="second_name" placeholder="Enter Name..." required />
 													</Form.Item>
 												</Col>
 											</Row>
 											<Row gutter={16}>
 												<Col md={12} xs={24}>
-													<Form.Item name="first_designation" label="First Person's Designation">
+													<Form.Item name="desig1" label="First Person's Designation">
 														<Input name="first_designation" placeholder="Enter Designation..." required />
 													</Form.Item>
 												</Col>
 												<Col md={12} xs={24}>
-													<Form.Item name="second_designation" label="Second Persons's Designation">
+													<Form.Item name="desig2" label="Second Persons's Designation">
 														<Input name="second_designation" placeholder="Enter Designation..." required />
 													</Form.Item>
 												</Col>
 											</Row>
 											<Row gutter={16}>
 												<Col md={12} xs={24}>
-													<Form.Item name="first_signature" label="First Person's Signature">
-														<Upload {...props2}>
-															<Button type="dashed" icon={<UploadOutlined />}>
-																Upload Signature
-															</Button>
-														</Upload>
-													</Form.Item>
+													<Typography.Text style={{ display: 'block', paddingBottom: '8px' }}>First Person's Signature</Typography.Text>
+													<Upload {...props2}>
+														<Button type="dashed" icon={<UploadOutlined />}>
+															Upload Signature
+														</Button>
+													</Upload>
 												</Col>
 												<Col md={12} xs={24}>
-													<Form.Item name="second_signature" label="Second Persons's Signature">
-														<Upload {...props2}>
-															<Button type="dashed" icon={<UploadOutlined />}>
-																Upload Signature
-															</Button>
-														</Upload>
-													</Form.Item>
+													<Typography.Text style={{ display: 'block', paddingBottom: '8px' }}>Second Person's Signature</Typography.Text>
+													<Upload {...props3}>
+														<Button type="dashed" icon={<UploadOutlined />}>
+															Upload Signature
+														</Button>
+													</Upload>
 												</Col>
 											</Row>
 											<Row gutter={24} justify="center">
-												<Col md={18} xs={24} style={{ marginTop: '.5em', marginBottom: mobile && '1em' }}>
-													<Button block type="primary">
+												<Col md={18} xs={24} style={{ marginTop: '2em', marginBottom: mobile && '1em' }}>
+													<Button block type="primary" htmlType="submit">
 														Generate and Send
 													</Button>
 												</Col>
@@ -248,4 +269,5 @@ function Certificates({ i18n, country }) {
 		</>
 	);
 }
-export default Certificates;
+
+export default withRouter(Certificates);

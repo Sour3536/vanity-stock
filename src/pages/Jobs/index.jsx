@@ -17,8 +17,28 @@ import JobsBackground from 'assets/images/for-jobs.svg';
 
 function Jobs({ history, i18n, language }) {
 	const [jobName, setJob] = useState('');
-	const [loading, setLoading] = useState(false);
+	const [jobData, setJobData] = useState([]);
+	const [loading, setLoading] = useState(true);
+	useEffect(() => {
+		fetch(`https://jobs-end-point.herokuapp.com/web-development`)
+			.then((response) => response.json())
+			.then((data) => {
+				setJobData(data);
+				setLoading(false);
+			});
+	}, []);
 	const showResults = () => {
+		setLoading(true);
+		fetch(`https://jobs-end-point.herokuapp.com/${jobName.replace(/ /g, '-')}`)
+			.then((response) => response.json())
+			.then((data) => {
+				setJobData(data);
+				setLoading(false);
+			})
+			.catch((e) => {
+				console.log(e);
+				return e;
+			});
 		console.log(jobName);
 	};
 	useEffect(() => {
@@ -84,30 +104,13 @@ function Jobs({ history, i18n, language }) {
 				<Loading />
 			) : (
 				<Row gutter={[32, 16]} style={{ paddingLeft: '6rem', paddingRight: '6rem', marginTop: '3em', paddingBottom: '3em' }}>
-					<Col span={6}>
-						<JobCard height="200px" />
-					</Col>
-					<Col span={6}>
-						<JobCard height="200px" />
-					</Col>
-					<Col span={6}>
-						<JobCard height="200px" />
-					</Col>
-					<Col span={6}>
-						<JobCard height="200px" />
-					</Col>
-					<Col span={6}>
-						<JobCard height="200px" />
-					</Col>
-					<Col span={6}>
-						<JobCard height="200px" />
-					</Col>
-					<Col span={6}>
-						<JobCard height="200px" />
-					</Col>
-					<Col span={6}>
-						<JobCard height="200px" />
-					</Col>
+					{jobData.map((dat, ind) => (
+						<Col span={6} key={ind}>
+							<a href={dat['job-link']} target="_blank" rel="noreferrer">
+								<JobCard data={dat} height="180px" />
+							</a>
+						</Col>
+					))}
 				</Row>
 			)}
 		</Layout>

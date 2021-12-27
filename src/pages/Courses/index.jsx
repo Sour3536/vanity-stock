@@ -12,10 +12,34 @@ import CourseCard from './CourseCard';
 import { mobile, media } from 'helpers';
 import CourseBackground from 'assets/images/for-back.svg';
 
-function Courses({ history, i18n, language }) {
+function Courses({ i18n, language }) {
 	const [courseName, setCourse] = useState('');
-	const [loading, setLoading] = useState(false);
+	const [courseData, setCourseData] = useState([]);
+	const [loading, setLoading] = useState(true);
+	useEffect(() => {
+		fetch('https://courses-end-point.herokuapp.com/web-development')
+			.then((response) => response.json())
+			.then((data) => {
+				setCourseData(data);
+				setLoading(false);
+			})
+			.catch((e) => {
+				console.log(e);
+				return e;
+			});
+	}, []);
 	const showResults = () => {
+		setLoading(true);
+		fetch(`https://courses-end-point.herokuapp.com/${courseName.replace(/ /g, '-')}`)
+			.then((response) => response.json())
+			.then((data) => {
+				setCourseData(data);
+				setLoading(false);
+			})
+			.catch((e) => {
+				console.log(e);
+				return e;
+			});
 		console.log(courseName);
 	};
 	return (
@@ -46,7 +70,7 @@ function Courses({ history, i18n, language }) {
 										defaultValue="Web Development"
 										suffix={suffix}
 										onChange={(e) => {
-											setJob(e.target.value);
+											setCourse(e.target.value);
 										}}
 										style={{
 											borderRadius: '25px',
@@ -74,19 +98,14 @@ function Courses({ history, i18n, language }) {
 			{loading ? (
 				<Loading />
 			) : (
-				<Row gutter={[32, 16]} style={{ paddingLeft: '6rem', paddingRight: '6rem', marginTop: '3em' }}>
-					<Col span={6}>
-						<CourseCard height="400px" />
-					</Col>
-					<Col span={6}>
-						<CourseCard height="400px" />
-					</Col>
-					<Col span={6}>
-						<CourseCard height="400px" />
-					</Col>
-					<Col span={6}>
-						<CourseCard height="400px" />
-					</Col>
+				<Row gutter={[48, 32]} justify="center" style={{ paddingLeft: '6rem', paddingRight: '6rem', marginTop: '3em' }}>
+					{courseData.map((dat, ind) => (
+						<Col span={6} key={ind}>
+							<a href={dat.link} target="_blank" rel="noreferrer">
+								<CourseCard data={dat} height="400px" />
+							</a>
+						</Col>
+					))}
 				</Row>
 			)}
 		</Layout>

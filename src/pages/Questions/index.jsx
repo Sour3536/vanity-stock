@@ -100,7 +100,7 @@ function Questions({ history, i18n, language }) {
 					dataSource={questionData}
 					renderItem={(item) => (
 						<li>
-							<a href={item.link} target="_blank">
+							<a href={item.link} target="_blank" rel="noreferrer">
 								<QuestionRow>
 									<Typography.Text
 										type="secondary"

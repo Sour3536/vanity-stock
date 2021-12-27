@@ -41,13 +41,27 @@ export default function JobCard({ height = '430px', boxShadow, ...props }) {
 				ellipsis={{
 					rows: 2
 				}}
-				style={{ fontWeight: '600', fontSize: '20px', padding: '0 20px 0 10px', marginBottom: '0.2em', lineHeight: '1.2' }}>
-				Software Development Engineer
+				style={{
+					fontWeight: '600',
+					fontSize: '22px',
+					height: '55px',
+					padding: '0 20px 0 10px',
+					marginBottom: '0.2em',
+					lineHeight: '1.2'
+				}}>
+				{props.data['job-title']}
 			</Typography.Paragraph>
-			<Typography.Text style={{ fontSize: '14px' }} type="secondary">
-				Amazon
+			<Typography.Text style={{ fontSize: '16px', padding: '0 10px' }} ellipsis={true}>
+				{props.data['company-name']}, {props.data['company-location']}
 			</Typography.Text>
 			<br />
+			<Typography.Text style={{ fontSize: '16px', display: 'inline-block', margin: '5px 0 5px 0' }} type="secondary">
+				Job Salary : {props.data['job-salary'] ? props.data['job-salary'] : 'Not Listed'}
+			</Typography.Text>
+			<br />
+			<Typography.Text style={{ fontSize: '16px' }}>
+				{props.data['post-date'] ? `Job posted ${props.data['post-date']}` : ''}
+			</Typography.Text>
 		</StyledCard>
 	);
 }

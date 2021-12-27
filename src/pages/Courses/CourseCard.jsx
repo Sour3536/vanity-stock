@@ -24,7 +24,8 @@ const StyledCard = styled(Card)`
 			`}
 		}
 		.ant-card-cover {
-			height: 230px;
+			height: 250px;
+			max-height: 250px;
 			img {
 				height: 100%;
 				object-fit: cover;
@@ -35,23 +36,60 @@ const StyledCard = styled(Card)`
 `;
 
 export default function CourseCard({ height = '430px', boxShadow, ...props }) {
+	let srcImg;
+	if (props.data.img) {
+		srcImg = props.data.img;
+		if (srcImg.indexOf('.jpg') !== -1) {
+			srcImg = srcImg.substring(0, srcImg.indexOf('.jpg') + 4);
+		} else if (srcImg.indexOf('.png') !== -1) {
+			srcImg = srcImg.substring(0, srcImg.indexOf('.png') + 4);
+		} else if (srcImg.indexOf('.jpeg') !== -1) {
+			srcImg = srcImg.substring(0, srcImg.indexOf('.jpeg') + 5);
+		}
+	} else {
+		srcImg = coursesImage;
+	}
 	return (
-		<StyledCard height={height} boxShadow={boxShadow} src={coursesImage} className="ta-center">
+		<StyledCard height={height} boxShadow={boxShadow} src={srcImg} className="ta-center">
 			<Typography.Paragraph
 				ellipsis={{
 					rows: 2
 				}}
-				style={{ fontWeight: '600', fontSize: '20px', padding: '0 20px 0 10px', marginBottom: '0.2em', lineHeight: '1.2' }}>
-				Learn Python Programming Masterclass Hello Hello Hello Hello
+				style={{ fontWeight: '600', fontSize: '22px', padding: '0 20px 0 10px', marginBottom: '0.2em', lineHeight: '1.2', height: '55px' }}>
+				{props.data.title}
 			</Typography.Paragraph>
-			<Typography.Text style={{ fontSize: '14px' }} type="secondary">
-				Jose Portilla
+			<Typography.Text style={{ fontSize: '18px', padding: '0 10px', marginBottom: '3px' }} type="secondary" ellipsis={true}>
+				{props.data.partnerName}
 			</Typography.Text>
 			<br />
-			<Typography.Text style={{ fontSize: '14px', padding: '0 10px 0 0' }} strong>
-				4.7
-			</Typography.Text>
-			<Rate allowHalf defaultValue={4.5} />
+			{props.data.difficulty ? (
+				<Typography.Text style={{ fontSize: '18px' }}>
+					Difficulty :{' '}
+					<StyledTag
+						style={{
+							background:
+								props.data.difficulty == 'Beginner'
+									? 'limegreen'
+									: props.data.difficulty == 'mixed'
+									? 'yellow'
+									: props.data.difficulty == 'Intermediate'
+									? 'blue'
+									: 'red'
+						}}>
+						{props.data.difficulty}
+					</StyledTag>
+				</Typography.Text>
+			) : (
+				''
+			)}
 		</StyledCard>
 	);
 }
+
+//beginner mixed intermediate advanced
+const StyledTag = styled(Tag)`
+	font-size: 17px !important;
+	padding: 4px 12px 8px 12px !important;
+	border-radius: 16px !important;
+	color: #fff !important;
+`;

@@ -30,7 +30,7 @@ export default function Rutes({ language, country }) {
 				<Route
 					path="/openboard"
 					component={() => {
-						window.location.href = 'https://youtube.com';
+						window.location.href = 'https://letmehelp-open-board.herokuapp.com/';
 						return null;
 					}}
 				/>
