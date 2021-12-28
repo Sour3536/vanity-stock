@@ -23,14 +23,6 @@ const BackgroundImage = styled.div`
 		top: 20px;
 		cursor: pointer;
 	}
-	@media only screen and (min-width: 1024px) and (max-height: 1366px) and (-webkit-min-device-pixel-ratio: 1.5) {
-		background-size: 30em;
-		height: calc(40vh - 180px);
-	}
-	${media.tablet`
-		background-size: 22em;
-		height: calc(40vh - 100px);
-	`}
 `;
 
 const BackgroundImage2 = styled(BackgroundImage)`
@@ -62,9 +54,6 @@ const StyledSection = styled(Section)`
 const StyledRow = styled(Row)`
 	background-color: #fff;
 	padding: 2.5rem 8rem 1.5rem 8rem;
-	@media only screen and (min-width: 1024px) and (max-height: 1366px) and (-webkit-min-device-pixel-ratio: 1.5) {
-		padding: 0 12rem;
-	}
 	${media.tablet`
 		padding: 0 7rem;
 	`}

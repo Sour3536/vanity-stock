@@ -155,10 +155,6 @@ const MainRow = styled(Row).attrs(() => ({
 			height: 11px;
 		}
 	}
-	@media only screen and (min-width: 1024px) and (max-height: 1366px) and (-webkit-min-device-pixel-ratio: 1.5) {
-		padding-left: 3rem;
-		padding-right: 3rem;
-	}
 	${media.tablet`
         padding-left: 4em;
         padding-right: 4em;
@@ -230,10 +226,6 @@ const BackgroundImage = styled.div`
 		background-size: 11em;
 		background-position: 50% 80%;
 	`}
-	@media only screen and (min-width: 1024px) and (max-height: 1366px) and (-webkit-min-device-pixel-ratio: 1.5) {
-		background-size: 23em;
-		background-position: 0% 0%;
-	}
 	@media (max-width: 321px) {
 		height: 285px;
 		background-position: 50% 90%;

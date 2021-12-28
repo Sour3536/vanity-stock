@@ -209,7 +209,7 @@ const OverlayDiv = styled.div`
 	height: 100%;
 	${'' /* background-image: linear-gradient(to right bottom, #7dd56f, #28b487); */}
 	background-image: linear-gradient(to right bottom, #4dbf3b, #20b057);
-	opacity: 0.7;
+	opacity: 0.5;
 	border-radius: 15px;
 `;
 const Image = styled.div`
