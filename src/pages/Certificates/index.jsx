@@ -12,11 +12,11 @@ import axios from 'axios';
 
 const BackgroundImage = styled.div`
 	background-image: ${`url(${certiImage})`};
-	background-size: 18em;
+	background-size: 16em;
 	background-repeat: no-repeat;
 	background-position: 50% 100%;
 	position: relative;
-	height: 420px;
+	height: 50vh;
 	img {
 		position: absolute;
 		left: 30px;
