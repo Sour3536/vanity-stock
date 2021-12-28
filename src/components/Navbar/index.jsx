@@ -32,7 +32,7 @@ function Navbar({ i18n, isUserLoggedIn = true, forLogin, forSignUp }) {
 							<div className="main-logo">
 								<StyledLogo
 									style={{ marginBottom: '0' }}
-									onClick={() => history.push(`/${country}`)}
+									onClick={() => history.push(`/`)}
 									width={mobile ? '200px' : tablet ? '180' : '270'}
 								/>
 							</div>

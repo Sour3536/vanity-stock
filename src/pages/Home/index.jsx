@@ -54,9 +54,8 @@ function Home({ i18n, language }) {
 						i="1"
 						className="img"
 						onClick={() => {
-							history.push({
-								pathname: `/courses`
-							});
+							const win = window.open('/courses', '_blank');
+							win.focus();
 						}}>
 						<Span>
 							<Image src={coursesImage} />
@@ -69,9 +68,8 @@ function Home({ i18n, language }) {
 						i="2"
 						className="img"
 						onClick={() => {
-							history.push({
-								pathname: `/books`
-							});
+							const win = window.open('/books', '_blank');
+							win.focus();
 						}}>
 						<Span>
 							<Image src={booksImage} />
@@ -84,9 +82,8 @@ function Home({ i18n, language }) {
 						i="3"
 						className="img"
 						onClick={() => {
-							history.push({
-								pathname: `/jobs`
-							});
+							const win = window.open('/jobs', '_blank');
+							win.focus();
 						}}>
 						<Span>
 							<Image src={jobsImage} />
@@ -99,9 +96,8 @@ function Home({ i18n, language }) {
 						i="4"
 						className="img"
 						onClick={() => {
-							history.push({
-								pathname: `/questions`
-							});
+							const win = window.open('/questions', '_blank');
+							win.focus();
 						}}>
 						<Span>
 							<Image src={questionImage} />
@@ -114,9 +110,8 @@ function Home({ i18n, language }) {
 						i="5"
 						className="img"
 						onClick={() => {
-							history.push({
-								pathname: `/certificates`
-							});
+							const win = window.open('/certificates', '_blank');
+							win.focus();
 						}}>
 						<Span>
 							<Image src={certiImage} />
@@ -129,9 +124,8 @@ function Home({ i18n, language }) {
 						i="6"
 						className="img"
 						onClick={() => {
-							history.push({
-								pathname: `/openboard`
-							});
+							const win = window.open('/openboard', '_blank');
+							win.focus();
 						}}>
 						<Span>
 							<Image src={openBoardImage} />
