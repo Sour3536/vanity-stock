@@ -274,20 +274,11 @@ function Certificates({ i18n, country }) {
 			</Layout>
 			<StyledModal visible={isModalVisible} footer={null} onCancel={handleCancel}>
 				<Row align="middle" justify="center">
-					<BoldHeadPar
-						level={2}
-						content={
-							<Paragraph>
-								<span className="primary">Emails Sent Successfully...</span>
-							</Paragraph>
-						}
-						style={{ position: 'absolute', top: '250px' }}
-					/>
 					<GifPlayer
 						src="https://assets10.lottiefiles.com/packages/lf20_sh5iuorb.json"
-						style={{ marginBottom: '1em', marginTop: '-4em' }}
-						width={350}
-						height={350}
+						style={{ marginBottom: '-7em', marginTop: '-8em' }}
+						width={550}
+						height={550}
 					/>
 				</Row>
 			</StyledModal>
@@ -297,52 +288,9 @@ function Certificates({ i18n, country }) {
 
 export default withRouter(Certificates);
 
-const BoldHeading = styled(Heading)`
-	&& {
-		margin-bottom: 2em;
-		h2 {
-			font-weight: bold;
-			line-height: 1.2;
-		}
-	}
-`;
-
-const BoldHeadPar = styled(BoldHeading)`
-	&& {
-		h2 {
-			p {
-				margin-bottom: 0;
-			}
-			.primary {
-				color: ${baseStyles.primaryColor};
-			}
-		}
-		.ant-typography:not(h2) {
-			font-size: 1.3em;
-		}
-	}
-	${media.mobile`
-        text-align: center;
-		.ant-typography.subheader {
-			font-size: 1em !important;
-		}
-		h3.ant-typography {
-			font-size: 1.3em !important;
-		}
-    `}
-`;
-
-const Paragraph = styled(Typography.Paragraph)`
-	&& {
-		margin-bottom: 0;
-		color: ${({ color }) => color || baseStyles.greyColor};
-	}
-`;
-
 const StyledModal = styled(Modal)`
 	top: 25%;
 	.ant-modal-content {
 		border-radius: 20px !important;
-		background: #e7e7e7;
 	}
 `;
