@@ -131,8 +131,8 @@ function Home({ i18n, language }) {
 							<Image src={openBoardImage} />
 							<OverlayDiv></OverlayDiv>
 						</Span>
-						<SpanText style={{ right: '35px' }}>Let's Try</SpanText>
-						<SpanText2 style={{ right: '20px' }}>Openboard</SpanText2>
+						<SpanText>Wanna Make</SpanText>
+						<SpanText2 style={{ right: '40px' }}>Notes</SpanText2>
 					</InnerBox>
 				</BoxDiv>
 			</Div>

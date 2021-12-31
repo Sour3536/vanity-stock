@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import '@ant-design/compatible/assets/index.css';
-import { Row, Col, Form, Input, message, BackTop, Upload, Typography } from 'antd';
+import { Row, Col, Form, Input, message, BackTop, Upload, Typography, Modal } from 'antd';
 import { InboxOutlined, UploadOutlined } from '@ant-design/icons';
 import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
-import { Section, Heading, Button, Card, Layout } from 'components';
+import { Section, Heading, Button, Card, Layout, GifPlayer } from 'components';
 import { media, mobile, tablet, screenLG } from 'helpers';
 import certiImage from 'assets/images/for-certi.svg';
 import certiSampleImage from 'assets/images/for-certi-sample.PNG';
 import axios from 'axios';
+import { baseStyles } from 'styles/base';
 
 const BackgroundImage = styled.div`
 	background-image: ${`url(${certiImage})`};
@@ -52,7 +53,6 @@ const StyledSection = styled(Section)`
 `;
 
 const StyledRow = styled(Row)`
-	background-color: #fff;
 	padding: 2.5rem 8rem 1.5rem 8rem;
 	${media.tablet`
 		padding: 0 7rem;
@@ -70,12 +70,28 @@ function Certificates({ i18n, country }) {
 	const [xlfile, setXlFile] = useState();
 	const [sign1File, setSign1File] = useState();
 	const [sign2File, setSign2File] = useState();
+	const [isModalVisible, setIsModalVisible] = useState(false);
+	const handleCancel = () => {
+		setIsModalVisible(false);
+	};
 	const key = 'updatable';
 	const onFinish = (values) => {
 		if (!xlfile || !sign1File || !sign2File) {
 			message.warning('Some file uploads still left!');
 		} else {
-			message.loading({ content: 'Generating Certies...', key });
+			message.loading({ content: 'Generating Certies...', key, duration: 0 });
+			let arr = values.appText.replace('\n', ' ').split(' ');
+			let str = '';
+			let ind = 112;
+			for (let i = 0; i < arr.length; i++) {
+				if (str.length + arr[i].length + 1 <= ind) {
+					str += arr[i];
+					str += ' ';
+				} else {
+					str += '\n';
+					ind += str.length;
+				}
+			}
 			const formData = new FormData();
 			formData.append('excelFile', xlfile);
 			formData.append('sign1', sign1File);
@@ -84,9 +100,10 @@ function Certificates({ i18n, country }) {
 			formData.append('desig2', values.desig2);
 			formData.append('org1Name', values.org1Name);
 			formData.append('org2Name', values.org2Name);
-			formData.append('appText', values.appText);
+			formData.append('appText', str);
 			axios.post('https://generate-mail-certis.herokuapp.com/certi-data', formData).then((res) => {
-				message.success({ content: 'Certies Sent Successfully..', key, duration: 2 });
+				message.loading({ content: 'Generating Certies...', key, duration: 0.001 });
+				setIsModalVisible(true);
 			});
 		}
 	};
@@ -183,14 +200,14 @@ function Certificates({ i18n, country }) {
 											<p className="ant-upload-hint">
 												Upload an excel file with just two fields
 												<br />
-												First as name and second as Email
+												First as Name and second as Email
 											</p>
 										</Upload.Dragger>
 									</StyledSection>
 									<StyledSection marginBottom={0}>
 										<Form layout="vertical" onFinish={onFinish}>
 											<Form.Item name="appText" label="Appreciation text">
-												<Input.TextArea rows={4} placeholder="Enter Appreciation text" />
+												<Input.TextArea rows={4} placeholder="Enter Appreciation text" maxLength={320} />
 											</Form.Item>
 											<Heading
 												title_color="#4dbf3b"
@@ -205,7 +222,7 @@ function Certificates({ i18n, country }) {
 													</Form.Item>
 												</Col>
 												<Col md={12} xs={24}>
-													<Form.Item name="org2Name" label="Second Persons's Name">
+													<Form.Item name="org2Name" label="Second Person's Name">
 														<Input name="second_name" placeholder="Enter Name..." required />
 													</Form.Item>
 												</Col>
@@ -217,7 +234,7 @@ function Certificates({ i18n, country }) {
 													</Form.Item>
 												</Col>
 												<Col md={12} xs={24}>
-													<Form.Item name="desig2" label="Second Persons's Designation">
+													<Form.Item name="desig2" label="Second Person's Designation">
 														<Input name="second_designation" placeholder="Enter Designation..." required />
 													</Form.Item>
 												</Col>
@@ -226,7 +243,7 @@ function Certificates({ i18n, country }) {
 												<Col md={12} xs={24}>
 													<Typography.Text style={{ display: 'block', paddingBottom: '8px' }}>First Person's Signature</Typography.Text>
 													<Upload {...props2}>
-														<Button type="dashed" icon={<UploadOutlined />}>
+														<Button type="dashed" style={{ width: '100% !important' }} icon={<UploadOutlined />}>
 															Upload Signature
 														</Button>
 													</Upload>
@@ -255,8 +272,77 @@ function Certificates({ i18n, country }) {
 					</Col>
 				</StyledRow>
 			</Layout>
+			<StyledModal visible={isModalVisible} footer={null} onCancel={handleCancel}>
+				<Row align="middle" justify="center">
+					<BoldHeadPar
+						level={2}
+						content={
+							<Paragraph>
+								<span className="primary">Emails Sent Successfully...</span>
+							</Paragraph>
+						}
+						style={{ position: 'absolute', top: '250px' }}
+					/>
+					<GifPlayer
+						src="https://assets10.lottiefiles.com/packages/lf20_sh5iuorb.json"
+						style={{ marginBottom: '1em', marginTop: '-4em' }}
+						width={350}
+						height={350}
+					/>
+				</Row>
+			</StyledModal>
 		</>
 	);
 }
 
 export default withRouter(Certificates);
+
+const BoldHeading = styled(Heading)`
+	&& {
+		margin-bottom: 2em;
+		h2 {
+			font-weight: bold;
+			line-height: 1.2;
+		}
+	}
+`;
+
+const BoldHeadPar = styled(BoldHeading)`
+	&& {
+		h2 {
+			p {
+				margin-bottom: 0;
+			}
+			.primary {
+				color: ${baseStyles.primaryColor};
+			}
+		}
+		.ant-typography:not(h2) {
+			font-size: 1.3em;
+		}
+	}
+	${media.mobile`
+        text-align: center;
+		.ant-typography.subheader {
+			font-size: 1em !important;
+		}
+		h3.ant-typography {
+			font-size: 1.3em !important;
+		}
+    `}
+`;
+
+const Paragraph = styled(Typography.Paragraph)`
+	&& {
+		margin-bottom: 0;
+		color: ${({ color }) => color || baseStyles.greyColor};
+	}
+`;
+
+const StyledModal = styled(Modal)`
+	top: 25%;
+	.ant-modal-content {
+		border-radius: 20px !important;
+		background: #e7e7e7;
+	}
+`;

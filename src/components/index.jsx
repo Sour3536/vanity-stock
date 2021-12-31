@@ -8,5 +8,6 @@ import InputSearch from './InputSearch';
 import Logo from './Logo';
 import DynamicIcon from './DynamicIcon';
 import Card from './Card';
+import GifPlayer from './GifPlayer';
 
-export { Layout, Loading, Section, Heading, Button, InputSearch, Alert, Logo, DynamicIcon, Card };
+export { Layout, Loading, Section, Heading, Button, InputSearch, Alert, Logo, DynamicIcon, Card, GifPlayer };

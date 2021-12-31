@@ -70,7 +70,7 @@ export default function CourseCard({ height = '430px', boxShadow, ...props }) {
 							background:
 								props.data.difficulty == 'Beginner'
 									? 'limegreen'
-									: props.data.difficulty == 'mixed'
+									: props.data.difficulty == 'Mixed'
 									? 'yellow'
 									: props.data.difficulty == 'Intermediate'
 									? 'blue'
