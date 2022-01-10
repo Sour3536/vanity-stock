@@ -14,128 +14,243 @@ import jobsImage from 'assets/images/img3.jpg';
 import questionImage from 'assets/images/img4.jpg';
 import certiImage from 'assets/images/img5.png';
 import openBoardImage from 'assets/images/img6.png';
-import gsap from 'gsap';
-import $ from 'jquery';
-
-gsap
-	.timeline()
-	.set('.ring', { rotationY: 180, cursor: 'grab' }) //set initial rotationY so the parallax jump happens off screen
-	.set('.img', {
-		// apply transform rotations to each image
-		rotateY: (i) => i * -36,
-		transformOrigin: '50% 50% 500px',
-		z: -500,
-		backfaceVisibility: 'hidden'
-	})
-	.from('.img', {
-		duration: 1.5,
-		y: 200,
-		opacity: 0,
-		stagger: 0.1,
-		ease: 'expo'
-	})
-	.add(() => {
-		$('.img').on('mouseenter', (e) => {
-			let current = e.currentTarget;
-			gsap.to('.img', { opacity: (i, t) => (t === current ? 1 : 0.3), ease: 'power3' });
-		});
-		$('.img').on('mouseleave', (e) => {
-			gsap.to('.img', { opacity: 1, ease: 'power2.inOut' });
-		});
-	}, '-=0.5');
 
 function Home({ i18n, language }) {
+	const Start = () => {
+		document.getElementById('spin-container').style.animationPlayState = 'running';
+	};
+	const Stop = () => {
+		document.getElementById('spin-container').style.animationPlayState = 'paused';
+	};
 	const history = useHistory();
+	useEffect(() => {
+		var radius = 370; // how big of the radius
+		var imgWidth = 300; // width of images (unit: px)
+		var imgHeight = 220; // height of images (unit: px)
+
+		setTimeout(init, 1000);
+
+		var odrag = document.getElementById('drag-container');
+		var ospin = document.getElementById('spin-container');
+		var aImg = ospin.getElementsByTagName('img');
+		var aVid = ospin.getElementsByTagName('video');
+		var aEle = [...aImg, ...aVid]; // combine 2 arrays
+
+		var overlys = document.getElementsByClassName('sp');
+		for (let k = 0; k < overlys.length; k++) {
+			overlys[k].addEventListener(
+				'mouseenter',
+				() => {
+					for (let l = 0; l < overlys.length; l++) {
+						if (l !== k) {
+							overlys[l].style.transition = '.3s ease-in-out';
+							overlys[l].style.opacity = 0.3;
+						} else {
+							overlys[l].style.transition = '.3s ease-in-out';
+							// overlys[l].style.transform += 'scale(1.1)';
+						}
+					}
+				},
+				false
+			);
+			overlys[k].addEventListener(
+				'mouseleave',
+				() => {
+					// overlys[k].style.transform = overlys[k].style.transform.replace('scale(1.1)', '');
+					for (let l = 0; l < overlys.length; l++) {
+						overlys[l].style.transition = '.2s ease-in-out';
+						overlys[l].style.opacity = 1;
+					}
+				},
+				false
+			);
+		}
+
+		// Size of images
+		ospin.style.width = imgWidth + 'px';
+		ospin.style.height = imgHeight + 'px';
+
+		// Size of ground - depend on radius
+		var ground = document.getElementById('ground');
+		ground.style.width = radius * 3 + 'px';
+		ground.style.height = radius * 3 + 'px';
+
+		function init(delayTime) {
+			if (delayTime === undefined) {
+				let spans = document.getElementsByTagName('span');
+				setTimeout(() => {
+					for (let k = 0; k < spans.length; k++) {
+						spans[k].style.opacity = 1;
+					}
+				}, 1500);
+				console.log(document.getElementsByTagName('span').length);
+			}
+			for (var i = 0; i < aEle.length; i++) {
+				overlys[i].style.transform = 'rotateY(' + i * (360 / overlys.length) + 'deg) translateZ(' + radius + 'px)';
+				overlys[i].style.transition = 'transform 1s';
+				overlys[i].style.transitionDelay = delayTime || (overlys.length - i) / 4 + 's';
+			}
+		}
+
+		function applyTranform(obj) {
+			// Constrain the angle of camera (between 0 and 180)
+			if (tY > 10) tY = 10;
+			if (tY < 0) tY = 0;
+
+			// Apply the angle
+			obj.style.transform = 'rotateX(' + -tY + 'deg) rotateY(' + tX + 'deg)';
+		}
+
+		function playSpin(yes) {
+			ospin.style.animationPlayState = yes ? 'running' : 'paused';
+		}
+
+		var sX,
+			sY,
+			nX,
+			nY,
+			desX = 0,
+			desY = 0,
+			tX = 0,
+			tY = 0;
+
+		// setup events
+		document.onpointerdown = function (e) {
+			clearInterval(odrag.timer);
+			e = e || window.event;
+			var sX = e.clientX,
+				sY = e.clientY;
+
+			this.onpointermove = function (e) {
+				e = e || window.event;
+				var nX = e.clientX,
+					nY = e.clientY;
+				desX = nX - sX;
+				desY = nY - sY;
+				tX += desX * 0.1;
+				tY += desY * 0.1;
+				applyTranform(odrag);
+				sX = nX;
+				sY = nY;
+			};
+
+			this.onpointerup = function (e) {
+				odrag.timer = setInterval(function () {
+					desX *= 0.95;
+					desY *= 0.95;
+					tX += desX * 0.1;
+					tY += desY * 0.1;
+					applyTranform(odrag);
+					playSpin(false);
+					if (Math.abs(desX) < 0.5 && Math.abs(desY) < 0.5) {
+						clearInterval(odrag.timer);
+						playSpin(true);
+					}
+				}, 17);
+				this.onpointermove = this.onpointerup = null;
+			};
+
+			return false;
+		};
+
+		document.onmousewheel = function (e) {
+			e = e || window.event;
+			var d = e.wheelDelta / 20 || -e.detail;
+			radius += d;
+			if (radius > 500) radius = 500;
+			if (radius < 300) radius = 300;
+			init(1);
+		};
+	}, []);
 	return (
 		<Layout breadcrumb={false} language={language}>
-			<Div>
-				<BoxDiv>
-					<InnerBox
-						i="1"
-						className="img"
-						onClick={() => {
-							const win = window.open('/courses', '_blank');
-							win.focus();
-						}}>
-						<Span>
-							<Image src={coursesImage} />
-							<OverlayDiv></OverlayDiv>
-						</Span>
-						<SpanText>Search For</SpanText>
-						<SpanText2>Courses</SpanText2>
-					</InnerBox>
-					<InnerBox
-						i="2"
-						className="img"
-						onClick={() => {
-							const win = window.open('/books', '_blank');
-							win.focus();
-						}}>
-						<Span>
-							<Image src={booksImage} />
-							<OverlayDiv></OverlayDiv>
-						</Span>
-						<SpanText>Search For</SpanText>
-						<SpanText2>Books</SpanText2>
-					</InnerBox>
-					<InnerBox
-						i="3"
-						className="img"
-						onClick={() => {
-							const win = window.open('/jobs', '_blank');
-							win.focus();
-						}}>
-						<Span>
-							<Image src={jobsImage} />
-							<OverlayDiv></OverlayDiv>
-						</Span>
-						<SpanText>Search For</SpanText>
-						<SpanText2>Jobs</SpanText2>
-					</InnerBox>
-					<InnerBox
-						i="4"
-						className="img"
-						onClick={() => {
-							const win = window.open('/questions', '_blank');
-							win.focus();
-						}}>
-						<Span>
-							<Image src={questionImage} />
-							<OverlayDiv></OverlayDiv>
-						</Span>
-						<SpanText style={{ padding: '6px 10px' }}>Search For</SpanText>
-						<SpanText2>Questions</SpanText2>
-					</InnerBox>
-					<InnerBox
-						i="5"
-						className="img"
-						onClick={() => {
-							const win = window.open('/certificates', '_blank');
-							win.focus();
-						}}>
-						<Span>
-							<Image src={certiImage} />
-							<OverlayDiv></OverlayDiv>
-						</Span>
-						<SpanText>Wanna Generate</SpanText>
-						<SpanText2>Certificates</SpanText2>
-					</InnerBox>
-					<InnerBox
-						i="6"
-						className="img"
-						onClick={() => {
-							const win = window.open('/openboard', '_blank');
-							win.focus();
-						}}>
-						<Span>
-							<Image src={openBoardImage} />
-							<OverlayDiv></OverlayDiv>
-						</Span>
-						<SpanText>Wanna Make</SpanText>
-						<SpanText2 style={{ right: '40px' }}>Notes</SpanText2>
-					</InnerBox>
-				</BoxDiv>
-			</Div>
+			<OuterDiv>
+				<DragContainer id="drag-container">
+					<SpinContainer id="spin-container" onMouseOver={Stop} onMouseOut={Start}>
+						<InnerBox
+							className="sp"
+							onDoubleClick={() => {
+								const win = window.open('/courses', '_blank');
+								win.focus();
+							}}>
+							<Span>
+								<img src={coursesImage} alt="" />
+								<OverlayDiv />
+							</Span>
+							<SpanText>Search For</SpanText>
+							<SpanText2>Courses</SpanText2>
+						</InnerBox>
+						<InnerBox
+							className="sp"
+							onDoubleClick={() => {
+								const win = window.open('/books', '_blank');
+								win.focus();
+							}}>
+							<Span>
+								<img src={booksImage} alt="" />
+								<OverlayDiv />
+							</Span>
+							<SpanText>Search For</SpanText>
+							<SpanText2>Books</SpanText2>
+						</InnerBox>
+						<InnerBox
+							className="sp"
+							onDoubleClick={() => {
+								const win = window.open('/jobs', '_blank');
+								win.focus();
+							}}>
+							<Span>
+								<img src={jobsImage} alt="" />
+								<OverlayDiv />
+							</Span>
+							<SpanText>Search For</SpanText>
+							<SpanText2>Jobs</SpanText2>
+						</InnerBox>
+						<InnerBox
+							className="sp"
+							onDoubleClick={() => {
+								const win = window.open('/questions', '_blank');
+								win.focus();
+							}}>
+							<Span>
+								<img src={questionImage} alt="" />
+								<OverlayDiv />
+							</Span>
+							<SpanText style={{ padding: '6px 10px' }}>Search For</SpanText>
+							<SpanText2>Questions</SpanText2>
+						</InnerBox>
+						<InnerBox
+							className="sp"
+							onDoubleClick={() => {
+								const win = window.open('/certificates', '_blank');
+								win.focus();
+							}}>
+							<Span>
+								<img src={certiImage} alt="" />
+								<OverlayDiv />
+							</Span>
+							<SpanText>Wanna Generate</SpanText>
+							<SpanText2>Certificates</SpanText2>
+						</InnerBox>
+						<InnerBox
+							className="sp"
+							onDoubleClick={() => {
+								const win = window.open('/openboard', '_blank');
+								win.focus();
+							}}>
+							<Span>
+								<img src={openBoardImage} alt="" />
+								<OverlayDiv />
+							</Span>
+							<SpanText>Wanna Make</SpanText>
+							<SpanText2 style={{ right: '40px' }}>Notes</SpanText2>
+						</InnerBox>
+						<p></p>
+					</SpinContainer>
+
+					<Ground id="ground"></Ground>
+				</DragContainer>
+			</OuterDiv>
 		</Layout>
 	);
 }
@@ -151,30 +266,99 @@ export default (withRouter(Home))
 ███████║   ██║      ██║   ███████╗███████╗███████║
 ╚══════╝   ╚═╝      ╚═╝   ╚══════╝╚══════╝╚══════╝
 */
-const Span = styled.span`
+
+const OuterDiv = styled.div`
+	min-height: 80vh;
+	touch-action: none;
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	-webkit-perspective: 1000px;
+	perspective: 1000px;
+	-webkit-transform-style: preserve-3d;
+	transform-style: preserve-3d;
+`;
+const spin = keyframes`
+    from{
+		-webkit-transform: rotateY(0deg);
+				transform: rotateY(0deg);
+	} to{
+		-webkit-transform: rotateY(360deg);
+				transform: rotateY(360deg);
+	}
+`;
+const SpinContainer = styled.div`
+	position: relative;
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-transform-style: preserve-3d;
+	transform-style: preserve-3d;
+	animation: ${spin} 50s infinite linear;
+`;
+const DragContainer = styled(SpinContainer)`
+	animation: none;
+	img {
+		-webkit-transform-style: preserve-3d;
+		${'' /* object-fit: cover; */}
+		transform-style: preserve-3d;
+		width: 100%;
+		height: 100%;
+		line-height: 200px;
+		border-radius: 15px;
+	}
+	p {
+		font-family: Serif;
+		position: absolute;
+		top: 100%;
+		left: 50%;
+		-webkit-transform: translate(-50%, -50%) rotateX(90deg);
+		transform: translate(-50%, -50%) rotateX(90deg);
+		color: #fff;
+	}
+`;
+const Ground = styled.div`
+	width: 900px;
+	height: 900px;
+	position: absolute;
+	top: 100%;
+	left: 50%;
+	-webkit-transform: translate(-50%, -50%) rotateX(90deg);
+	transform: translate(-50%, -50%) rotateX(90deg);
+	background: -webkit-radial-gradient(center center, farthest-side, #91d57f, transparent);
+`;
+const OverlayDiv = styled.div`
 	position: absolute;
 	top: 0;
 	left: 0;
 	width: 100%;
 	height: 100%;
+	background-image: linear-gradient(to right bottom, #4dbf3b, #20b057);
+	opacity: 0.4;
+	border-radius: 15px;
+	z-index: 0;
+`;
+const Span = styled.div`
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	-webkit-transform-style: preserve-3d;
+	transform-style: preserve-3d;
 `;
 const InnerBox = styled.div`
-	--i: ${({ i }) => i || '0'};
 	position: absolute;
 	top: 0;
 	left: 0;
 	width: 100%;
 	height: 100%;
-	border-radius: 15px;
-	transform-origin: center;
+	-webkit-transform-style: preserve-3d;
 	transform-style: preserve-3d;
-	transform: rotateY(calc(var(--i) * 60deg)) translateZ(350px);
-	transition: transform 250ms ease-in-out;
-	-webkit-box-reflect: below 5px linear-gradient(transparent, transparent, #0009);
-	&:hover {
-		transform: rotateY(calc(var(--i) * 60deg)) translateZ(350px) scale(1.1);
-		cursor: pointer;
-	}
+	-webkit-box-reflect: below 10px linear-gradient(transparent, transparent, #0005);
+	cursor: pointer;
 `;
 const SpanText = styled.span`
 	position: absolute;
@@ -182,66 +366,19 @@ const SpanText = styled.span`
 	right: 20px;
 	color: #fff;
 	line-height: 1;
-	z-index: 10;
+	z-index: 100;
 	padding: 6px;
 	box-shadow: 0 12px 15px 0 rgba(0, 0, 0, 0.3), 0 17px 50px 0 rgba(0, 0, 0, 0.3);
-	${'' /* background-image: linear-gradient(to bottom right, rgba(125, 213, 111, 0.85), rgba(40, 180, 135, 0.85)); */}
-	background-image: linear-gradient(to bottom right, rgba(77, 191, 59, 0.85),rgba(23, 176, 87, 0.85), rgba(23, 176, 87, 0.85));
+	background-image: linear-gradient(to bottom right, rgba(77, 191, 59, 0.85), rgba(23, 176, 87, 0.85), rgba(23, 176, 87, 0.85));
 	font-size: 1.5rem;
 	text-align: right;
 	text-transform: uppercase;
 	font-weight: 300;
 	border-radius: 8px;
+	opacity: 0;
+	transition: 2s ease-in-out;
 `;
 const SpanText2 = styled(SpanText)`
 	top: 16px;
 	right: 30px;
-`;
-const Div = styled.div`
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	min-height: 80vh;
-`;
-const OverlayDiv = styled.div`
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	${'' /* background-image: linear-gradient(to right bottom, #7dd56f, #28b487); */}
-	background-image: linear-gradient(to right bottom, #4dbf3b, #20b057);
-	opacity: 0.5;
-	border-radius: 15px;
-`;
-const Image = styled.div`
-	${'' /* z-index: 100; */}
-	background-image: ${({ src }) => `url(${src})`};
-	background-position: center;
-	background-size: cover;
-	box-shadow: ${baseStyles.boxShadow.main};
-	position: absolute;
-	top: 0;
-	left: 0;
-	height: 100%;
-	width: 100%;
-	object-fit: cover;
-	border-radius: 15px;
-`;
-const animate = keyframes`
-  0% {
-    transform: perspective(900px) rotateY(0deg);
-  }
-  100% {
-    transform: perspective(900px) rotateY(360deg);
-  }
-`;
-const BoxDiv = styled.div`
-	position: relative;
-	width: 280px;
-	height: 200px;
-	transform-style: preserve-3d;
-	transform: perspective(900px) rotateY(0deg);
-	animation: ${animate} 20s linear infinite;
-	&:hover {
-		animation-play-state: paused;
-	}
 `;
