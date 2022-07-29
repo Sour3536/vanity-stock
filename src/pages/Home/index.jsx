@@ -14,6 +14,7 @@ import jobsImage from 'assets/images/img3.jpg';
 import questionImage from 'assets/images/img4.jpg';
 import certiImage from 'assets/images/img5.png';
 import openBoardImage from 'assets/images/img6.png';
+import { mobile } from 'helpers';
 
 function Home({ i18n, language }) {
 	const Start = () => {
@@ -24,9 +25,9 @@ function Home({ i18n, language }) {
 	};
 	const history = useHistory();
 	useEffect(() => {
-		var radius = 370; // how big of the radius
-		var imgWidth = 300; // width of images (unit: px)
-		var imgHeight = 220; // height of images (unit: px)
+		var radius = mobile ? 220 : 370; // how big of the radius
+		var imgWidth = mobile ? 180 : 300; // width of images (unit: px)
+		var imgHeight = mobile ? 160 : 220; // height of images (unit: px)
 
 		setTimeout(init, 1000);
 
@@ -85,17 +86,29 @@ function Home({ i18n, language }) {
 				}, 1500);
 				console.log(document.getElementsByTagName('span').length);
 			}
-			for (var i = 0; i < aEle.length; i++) {
-				overlys[i].style.transform = 'rotateY(' + i * (360 / overlys.length) + 'deg) translateZ(' + radius + 'px)';
-				overlys[i].style.transition = 'transform 1s';
-				overlys[i].style.transitionDelay = delayTime || (overlys.length - i) / 4 + 's';
+			if (mobile) {
+				for (let i = 0; i < aEle.length; i++) {
+					overlys[i].style.transform = 'rotateY(' + i * (360 / overlys.length) + 'deg) translateZ(' + radius + 'px)';
+					overlys[i].style.transition = 'transform 1s';
+					overlys[i].style.transitionDelay = delayTime || (overlys.length - i) / 4 + 's';
+				}
+			} else {
+				for (let i = 0; i < aEle.length; i++) {
+					overlys[i].style.transform = 'rotateY(' + i * (360 / overlys.length) + 'deg) translateZ(' + radius + 'px)';
+					overlys[i].style.transition = 'transform 1s';
+					overlys[i].style.transitionDelay = delayTime || (overlys.length - i) / 4 + 's';
+				}
 			}
 		}
 
 		function applyTranform(obj) {
 			// Constrain the angle of camera (between 0 and 180)
-			if (tY > 10) tY = 10;
-			if (tY < 0) tY = 0;
+			if (mobile) {
+				tY = 0;
+			} else {
+				if (tY > 10) tY = 10;
+				if (tY < 0) tY = 0;
+			}
 
 			// Apply the angle
 			obj.style.transform = 'rotateX(' + -tY + 'deg) rotateY(' + tX + 'deg)';
@@ -248,7 +261,7 @@ function Home({ i18n, language }) {
 						<p></p>
 					</SpinContainer>
 
-					<Ground id="ground"></Ground>
+					<Ground id="ground">LET ME HELP</Ground>
 				</DragContainer>
 			</OuterDiv>
 		</Layout>
@@ -296,7 +309,7 @@ const SpinContainer = styled.div`
 	display: flex;
 	-webkit-transform-style: preserve-3d;
 	transform-style: preserve-3d;
-	animation: ${spin} 50s infinite linear;
+	${'' /* animation: ${spin} 50s infinite linear; */}
 `;
 const DragContainer = styled(SpinContainer)`
 	animation: none;
